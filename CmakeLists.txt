@@ -1,0 +1,27 @@
+# Minmum version of Cmake
+cmake_minimum_required(VERSION 3.15)
+
+# Project Name 
+project(Chip8Emulator Languages CXX)
+
+# Force C++17 for modern features
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Handle Homebrew non standard paths for SDL2 on Apple Silicon
+if (APPLE)
+    list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew")
+endif()
+
+# Find the SDL2 Library
+find_package(SDL2 REQUIRED)
+
+# Include header files folder
+include_directories(include)
+
+# Source files
+file(GLOB SOURCES src/*.cpp)
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+# Link SDL2
+target_link_libraries(chip8 PRIVATE SDL2::SDL2)

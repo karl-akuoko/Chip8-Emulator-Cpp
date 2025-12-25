@@ -40,5 +40,5 @@
 # debug information files
 *.dwo
 
-# ignore makefile
-Makefile
+# ignore build 
+build/
