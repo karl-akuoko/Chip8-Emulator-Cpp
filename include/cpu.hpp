@@ -10,7 +10,7 @@ public:
     // Constructor: sets up initial state
     CPU();
     // Loads game into memory
-    void loadROM(const char *filename);
+    void loadROM(const std::string& filename);
     // Fetch-Decode_Execute
     void cycle();
 
@@ -38,8 +38,7 @@ private:
     // Display (64x32 pixels, monochrome)
     std::array<uint32_t, 64 * 32> display;
 
-    // Internal helper functions
-    void fetch();
+    // Internal helper function
     void decode_and_execute(uint16_t opcode);
 };
 

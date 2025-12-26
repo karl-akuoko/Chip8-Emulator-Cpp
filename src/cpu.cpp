@@ -1,6 +1,8 @@
 #include "../include/cpu.hpp"
 #include <fstream>
 #include <vector>
+#include <iostream>
+#include <memory>
 
 const unsigned int FONTSET_START_ADDRESS = 0x50;
 
@@ -42,4 +44,53 @@ CPU::CPU()
     for (unsigned int i = 0; i < 80; i++) {
         memory[FONTSET_START_ADDRESS + i] = fontset[i];
     }
+}
+
+void CPU::loadROM(const std::string& filename) {
+    // Open the file in binary mode and move to the end to find the size
+    std::ifstream file(filename, std::ios::binary | std::ios::ate);
+
+    if (file.is_open()) {
+        std::streamsize size = file.tellg();
+
+        // Avaliable space calculation
+        const size_t MAX_ROM_SIZE = memory.size() - 0x200;
+        
+        // ROM can not overfill memory
+        if (size > MAX_ROM_SIZE) {
+            std::cerr << "Error: ROM file is too large (" << size <<
+             " bytes)." << std::endl;
+        }
+
+        // Creates a unique_ptr to manage the character array 
+        auto buffer = std::make_unique<char[]>(size);
+
+        // Read file into buffer
+        file.seekg(0, std::ios::beg);
+        file.read(buffer.get(), size);
+        file.close();
+
+        // Load the buffer into the CHIP-8 memory starting at 0x200
+        for (size_t i = 0; i < size; ++i) {
+            memory[0x200 + i] = static_cast<uint8_t>(buffer[i]);
+        }
+
+        std::cout << "Successfully loaded ROM: " << filename << " (" <<
+            size << "bytes)" << std::endl;
+
+    } else {
+        std::cerr << "Failed to open ROM file: " << filename << std::endl;
+    }
+
+}
+
+void CPU::cycle() {
+    // FETCH: Combines two bytes into 16-bit instruction
+    uint16_t instruction = (memory[pc] << 8) | memory[pc + 1];
+
+    // Increment PC
+    pc += 2;
+
+    // DECODE and EXECUTE
+    decode_and_execute(instruction);
 }
