@@ -182,14 +182,14 @@ void CPU::decode_and_execute(uint16_t instruction) {
                 case 0x3: // Set Vx = Vx XOR Vy
                     registers[x] = registers[x] ^ registers[y];
                     break;
-                case 0x4: // Set Vx = Vx + Vy, set VF = carry
+                case 0x4: { // Set Vx = Vx + Vy, set VF = carry
                     uint16_t sum = static_cast<uint16_t>(registers[x] 
                         + registers[y]);
                     registers[0xF] = (sum > 255) ? 1 : 0;
                     registers[x] = sum & 0xFF; 
-                    break;
+                    break; }
                 case 0x5: // Set Vx = Vx - Vy, set VF = NOT borrow
-                    (registers[x] > registers[y]) ? 1 : 0;
+                    registers[0xF] = (registers[x] > registers[y]) ? 1 : 0;
                     registers[x] = registers[x] - registers[y];
                     break;
                 case 0x6: // Set Vx = Vx SHR 1
@@ -201,7 +201,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     registers[x] >>= 1;
                     break;
                 case 0x7: // Set Vx = Vy - Vx, set VF = Not Borrow
-                    (registers[y] > registers[x]) ? 1 : 0;
+                    registers[0xF] = (registers[y] > registers[x]) ? 1 : 0;
                     registers[x] = registers[y] - registers[x];
                     break;
                 case 0xE: // Set Vx = Vx SHL 1
@@ -225,17 +225,17 @@ void CPU::decode_and_execute(uint16_t instruction) {
             pc = nnn + registers[0x0];
             break;
         
-        case 0xC: // Set Vx = random byte AND kk
+        case 0xC: { // Set Vx = random byte AND kk
             // 'static' ensures these are only initialized ONCE
             static std::default_random_engine generator(std::random_device{}()); 
-             static std::uniform_int_distribution<uint8_t> distribution(0, 255);
+            static std::uniform_int_distribution<uint8_t> distribution(0, 255);
 
             uint8_t random_byte = distribution(generator); // Get a number 0-255
             registers[x] = random_byte & kk; // Bitwise AND with kk
-            break;
+            break; }
         
-        case 0xD: // Display n-byte sprite starting at memory location I at 
-                  // memory location I at (Vx, Vy), set VF = collision.
+        case 0xD: { // Display n-byte sprite starting at memory location I at 
+                    // memory location I at (Vx, Vy), set VF = collision.
                 
                 registers[0xF] = 0; // Reset collision flag
                 uint32_t pixel_color = 0xFFFFFFFF;
@@ -261,7 +261,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
                         }
                     }
                 }
-            break;
+            break; }
 
         case 0xE: 
             if (kk == 0x9E) {
@@ -283,20 +283,21 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     break;
 
                 // Wait for a key press, store the value of the key in Vx
-                case 0x0A:
+                case 0x0A: {
                     bool key_pressed = false; 
 
                     for (uint8_t i = 0; i < 16; ++i) {
                         if (keypad[i]) {
                             registers[x] = i;
                             key_pressed = true;
+                            break;
                         }
                     }
 
                     if (!key_pressed) {
                         pc -= 2;
                     }
-                    break;
+                    break; }
                 
                 // Set delay timer = Vx
                 case 0x15:
@@ -320,12 +321,12 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     break;
                 
                 // Store BCD representation of Vx in mem locations I, I+1, and I+2
-                case 0x33:
+                case 0x33: {
                     int value = static_cast<int>(registers[x]);
                     memory[index_register] = (value / 100);
                     memory[index_register + 1] = (value / 10) % 10;
                     memory[index_register + 2] = value % 10;
-                    break;
+                    break; }
                 
                 // Store registers V0 through Vx in memory starting at location I
                 case 0x55:
