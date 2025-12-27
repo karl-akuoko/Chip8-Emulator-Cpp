@@ -10,6 +10,8 @@ public:
 
     bool isBuzzerPlaying() const { return buzzer_playing; }
 
+    bool draw_flag = false;
+
     // Constructor: sets up initial state
     CPU();
 

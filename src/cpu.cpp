@@ -125,6 +125,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
             // Clear the display
             if (instruction == 0x00E0) {
                 display.fill(0);
+                draw_flag = true;
             // Return from subroutine
             } else if (instruction == 0x00EE) {
                 --sp;
@@ -258,6 +259,8 @@ void CPU::decode_and_execute(uint16_t instruction) {
                             } else {
                                 display[pixel_index] = pixel_color;
                             }
+
+                            draw_flag = true;
                         }
                     }
                 }

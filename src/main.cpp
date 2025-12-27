@@ -104,29 +104,31 @@ int main(int argc, char** argv) {
         }
 
         // Draw to Screen
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Set color to Black
-        SDL_RenderClear(renderer);                      // Clear the backbuffer
+        if (chip8.draw_flag) {
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Set color to Black
+            SDL_RenderClear(renderer);                      // Clear the backbuffer
 
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Set color to White for pixels
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Set color to White for pixels
 
-        for (int y = 0; y < 32; ++y) {
-            for (int x = 0; x < 64; ++x) {
-                // Check if the pixel at (x, y) is on
-                if (chip8.getDisplay()[y * 64 + x] != 0) {
-                    SDL_Rect pixel;
-                    pixel.x = x * SCALE;
-                    pixel.y = y * SCALE;
-                    pixel.w = SCALE;
-                    pixel.h = SCALE;
+            for (int y = 0; y < 32; ++y) {
+                for (int x = 0; x < 64; ++x) {
+                    // Check if the pixel at (x, y) is on
+                    if (chip8.getDisplay()[y * 64 + x] != 0) {
+                        SDL_Rect pixel;
+                        pixel.x = x * SCALE;
+                        pixel.y = y * SCALE;
+                        pixel.w = SCALE;
+                        pixel.h = SCALE;
 
-                    SDL_RenderFillRect(renderer, &pixel);
+                        SDL_RenderFillRect(renderer, &pixel);
+                    }
                 }
             }
-        }
 
-        SDL_RenderPresent(renderer); // Show the newly drawn frame
-        
-        SDL_Delay(1); // Sleep slightly to prevent 100% CPU usage
+            SDL_RenderPresent(renderer); // Show the newly drawn frame
+            chip8.draw_flag = false;
+            SDL_Delay(1); // Sleep slightly to prevent 100% CPU usage
+        }
     }
 
     SDL_DestroyRenderer(renderer);
