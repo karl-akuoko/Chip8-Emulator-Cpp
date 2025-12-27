@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <memory>
+#include <random>
 
 const unsigned int FONTSET_START_ADDRESS = 0x50;
 
@@ -174,10 +175,77 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     registers[0xF] = (sum > 255) ? 1 : 0;
                     registers[x] = sum & 0xFF; 
                     break;
-                case 0x5: 
-
+                case 0x5: // Set Vx = Vx - Vy, set VF = NOT borrow
+                    (registers[x] > registers[y]) ? 1 : 0;
+                    registers[x] = registers[x] - registers[y];
+                    break;
+                case 0x6: // Set Vx = Vx SHR 1
+                    if (registers[x] % 2 == 0) {
+                        registers[0xF] = 0;
+                    } else {
+                        registers[0xF] = 1;
+                    }
+                    registers[x] >>= 1;
+                    break;
+                case 0x7: // Set Vx = Vy - Vx, set VF = Not Borrow
+                    (registers[y] > registers[x]) ? 1 : 0;
+                    registers[x] = registers[y] - registers[x];
+                    break;
+                case 0xE: // Set Vx = Vx SHL 1
+                    registers[0xF] = (registers[x] & 0x80) ? 1 : 0;
+                    registers[x] *= 2;
+                    break;
             }
             break;
+        
+        case 0x9: // Skip next instruction if Vx != Vy
+            if (registers[x] != registers[y]) {
+                pc += 2;
+            }
+            break;
+        
+        case 0xA: // Set I = nnn
+            index_register = static_cast<uint16_t>(nnn); 
+            break;
+        
+        case 0xB: // Jump to location nnn + V0
+            pc = nnn + registers[0x0];
+        
+        case 0xC: // Set Vx = random byte AND kk
+            // 'static' ensures these are only initialized ONCE
+            static std::default_random_engine generator(std::random_device{}()); 
+             static std::uniform_int_distribution<uint8_t> distribution(0, 255);
+
+            uint8_t random_byte = distribution(generator); // Get a number 0-255
+            registers[x] = random_byte & kk; // Bitwise AND with kk
+        
+        case 0xD: // Display n-byte sprite starting at memory location I at 
+                  // memory location I at (Vx, Vy), set VF = collision.
+                
+                registers[0xF] = 0; // Reset collision flag
+                uint32_t pixel_color = 0xFFFFFFFF;
+
+                for (int row = 0; row < n; row++) {
+                    uint8_t sprite_byte = memory[index_register + row];
+                    
+                    for (int col = 0; col < 8; col++) {
+                        if ((sprite_byte & (0x80 >> col)) != 0) {
+
+                            // Wrap coordinates
+                            int target_x = (registers[x] + col) % 64;
+                            int target_y =(registers[y] + row) % 32;
+                            int pixel_index = (target_y * 64) + target_x;
+
+                            // Check for collision and adjust pixel 
+                            if (display[pixel_index] == pixel_color) {
+                                registers[0xF] = 1;
+                                display[pixel_index] = 0; 
+                            } else {
+                                display[pixel_index] = pixel_color;
+                            }
+                        }
+                    }
+                }
         default:
             break;
     }
