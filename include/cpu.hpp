@@ -22,6 +22,9 @@ public:
     // Decrements timers at 60Hz
     void updateTimers();
 
+    // Share display array data to main
+    const uint32_t* getDisplay() const { return display.data(); }
+
 
 private:
     // Hardware Components

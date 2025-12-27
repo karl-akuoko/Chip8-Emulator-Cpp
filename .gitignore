@@ -42,3 +42,6 @@
 
 # ignore build 
 build/
+
+# ignore settings JSON
+.vscode/
