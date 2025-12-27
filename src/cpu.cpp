@@ -94,3 +94,91 @@ void CPU::cycle() {
     // DECODE and EXECUTE
     decode_and_execute(instruction);
 }
+
+void CPU::decode_and_execute(uint16_t instruction) {
+    // Extract common variables from the opcode
+    uint8_t kk = static_cast<uint8_t>(instruction & 0xFF);
+    uint16_t nnn = instruction & 0xFFF;
+    uint8_t n = static_cast<uint8_t>(instruction & 0xF);
+    uint8_t x = static_cast<uint8_t>(instruction & 0xF00) >> 8;
+    uint8_t y = static_cast<uint8_t>(instruction & 0xF0) >> 4;
+    
+    // first nibble determines instruction vategorm
+    uint8_t first_nibble = static_cast<uint8_t>(instruction & 0xF000) >> 12;
+    
+    switch (first_nibble) {
+        case 0x0:
+            // 00E0: Clear the display
+            if (instruction == 0x00E0) {
+                display.fill(0);
+            // 00EE: Return from subroutine
+            } else if (instruction == 0x00EE) {
+                --sp;
+                pc = stack[sp];
+            }
+            break;
+        
+        case 0x1: // Jump to location nnn
+            pc = nnn;
+            break;
+        
+        case 0x2: // Call subroutine at nnn
+            stack[sp] = pc;
+            ++sp;
+            pc = nnn;
+            break;
+        
+        case 0x3: // Skip next instruction if Vx = kk
+            if (registers[x] == kk) {
+                pc += 2;
+            }
+            break;
+        
+        case 0x4: // Skip next instruction if Vx != kk
+            if (registers[x] != kk) {
+                pc += 2;
+            }
+            break;
+        
+        case 0x5: // Skip next instruction if Vx = Vy
+            if (registers[x] == registers[y]) {
+                pc += 2;
+            }
+            break;
+        
+        case 0x6: // Set Vx = kk
+            registers[x] = kk;
+            break;
+        
+        case 0x7: // Set Vx = Vx + kk
+            registers[x] = registers[x] + kk;
+            break;
+        
+        case 0x8:
+            switch(n) {
+                case 0x0: // Set Vx = Vy
+                    registers[x] = registers[y];
+                    break;
+                case 0x1: // Set Vx = Vx OR Vy
+                    registers[x] = registers[x] | registers[y];
+                    break;
+                case 0x2: // Set Vx = Vx AND Vy
+                    registers[x] = registers[x] & registers[y];
+                    break;
+                case 0x3: // Set Vx = Vx XOR Vy
+                    registers[x] = registers[x] ^ registers[y];
+                    break;
+                case 0x4: // Set Vx = Vx + Vy, set VF = carry
+                    uint16_t sum = static_cast<uint16_t>(registers[x] 
+                        + registers[y]);
+                    registers[0xF] = (sum > 255) ? 1 : 0;
+                    registers[x] = sum & 0xFF; 
+                    break;
+                case 0x5: 
+
+            }
+            break;
+        default:
+            break;
+    }
+}

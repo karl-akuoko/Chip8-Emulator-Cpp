@@ -39,7 +39,7 @@ private:
     std::array<uint32_t, 64 * 32> display;
 
     // Internal helper function
-    void decode_and_execute(uint16_t opcode);
+    void decode_and_execute(uint16_t instruction);
 };
 
 #endif
