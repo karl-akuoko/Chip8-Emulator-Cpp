@@ -85,6 +85,16 @@ void CPU::loadROM(const std::string& filename) {
 
 }
 
+void CPU::updateTimers() {
+    if (delay_timer > 0) {
+        --delay_timer;
+    }
+
+    if (sound_timer > 0) {
+        --sound_timer;
+    }
+}
+
 void CPU::cycle() {
     // FETCH: Combines two bytes into 16-bit instruction
     uint16_t instruction = (memory[pc] << 8) | memory[pc + 1];

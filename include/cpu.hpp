@@ -19,13 +19,16 @@ public:
     // Lets SDL change key states
     void setKeyState(uint8_t key, bool isPressed);
 
+    // Decrements timers at 60Hz
+    void updateTimers();
+
 
 private:
     // Hardware Components
 
     // 16 keys (0-F).
     std::array<uint8_t, 16> keypad;
-    
+
     // 4KB of Memory
     std::array<uint8_t, 4096> memory;
 
