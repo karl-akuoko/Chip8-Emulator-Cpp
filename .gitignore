@@ -45,3 +45,6 @@ build/
 
 # ignore settings JSON
 .vscode/
+
+# ignore ROM files
+ROMs/
