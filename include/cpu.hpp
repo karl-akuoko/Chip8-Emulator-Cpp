@@ -9,14 +9,23 @@ class CPU
 public:
     // Constructor: sets up initial state
     CPU();
+
     // Loads game into memory
     void loadROM(const std::string& filename);
+
     // Fetch-Decode_Execute
     void cycle();
+
+    // Lets SDL change key states
+    void setKeyState(uint8_t key, bool isPressed);
+
 
 private:
     // Hardware Components
 
+    // 16 keys (0-F).
+    std::array<uint8_t, 16> keypad;
+    
     // 4KB of Memory
     std::array<uint8_t, 4096> memory;
 

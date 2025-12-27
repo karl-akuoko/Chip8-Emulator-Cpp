@@ -109,10 +109,10 @@ void CPU::decode_and_execute(uint16_t instruction) {
     
     switch (first_nibble) {
         case 0x0:
-            // 00E0: Clear the display
+            // Clear the display
             if (instruction == 0x00E0) {
                 display.fill(0);
-            // 00EE: Return from subroutine
+            // Return from subroutine
             } else if (instruction == 0x00EE) {
                 --sp;
                 pc = stack[sp];
@@ -210,6 +210,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
         
         case 0xB: // Jump to location nnn + V0
             pc = nnn + registers[0x0];
+            break;
         
         case 0xC: // Set Vx = random byte AND kk
             // 'static' ensures these are only initialized ONCE
@@ -218,6 +219,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
 
             uint8_t random_byte = distribution(generator); // Get a number 0-255
             registers[x] = random_byte & kk; // Bitwise AND with kk
+            break;
         
         case 0xD: // Display n-byte sprite starting at memory location I at 
                   // memory location I at (Vx, Vy), set VF = collision.
@@ -246,7 +248,96 @@ void CPU::decode_and_execute(uint16_t instruction) {
                         }
                     }
                 }
+            break;
+
+        case 0xE: 
+            if (kk == 0x9E) {
+                // Skip next instruction if key with val Vx is pressed
+                if (keypad[registers[x]]) pc += 2;
+            } 
+            else if (kk == 0xA1) {
+                // Skip next instruction if key with val Vx is not pressed
+                if (!keypad[registers[x]]) pc += 2;
+            }
+            break;
+        
+        case 0xF:
+
+            switch(kk) {
+                // Set Vx = delay timer value
+                case 0x07:
+                    registers[x] = delay_timer;
+                    break;
+
+                // Wait for a key press, store the value of the key in Vx
+                case 0x0A:
+                    bool key_pressed = false; 
+
+                    for (uint8_t i = 0; i < 16; ++i) {
+                        if (keypad[i]) {
+                            registers[x] = i;
+                            key_pressed = true;
+                        }
+                    }
+
+                    if (!key_pressed) {
+                        pc -= 2;
+                    }
+                    break;
+                
+                // Set delay timer = Vx
+                case 0x15:
+                    delay_timer = registers[x];
+                    break;
+                
+                // Set sound timer = Vx
+                case 0x18:
+                    sound_timer = registers[x];
+                    break;
+                
+                // Set I = I + Vx
+                case 0x1E:
+                    index_register += registers[x];
+                    break;
+                
+                // Set I = location of sprite for digit Vx
+                case 0x29:
+                    index_register = FONTSET_START_ADDRESS + 
+                        (registers[x] * 5);
+                    break;
+                
+                // Store BCD representation of Vx in mem locations I, I+1, and I+2
+                case 0x33:
+                    int value = static_cast<int>(registers[x]);
+                    memory[index_register] = (value / 100);
+                    memory[index_register + 1] = (value / 10) % 10;
+                    memory[index_register + 2] = value % 10;
+                    break;
+                
+                // Store registers V0 through Vx in memory starting at location I
+                case 0x55:
+                    for (int i = 0; i <= x; ++i) {
+                        if (index_register + i < memory.size()) {
+                            memory[index_register + i] = registers[i];
+                        }
+                    }
+                    break;
+                
+                // Read registers V0 through Vx from memory starting at location I
+                case 0x65:
+                    for (int i = 0; i <= x; ++i) {
+                        registers[i] = memory[index_register + i];
+                    }
+                    break;
+            }
+            break;
         default:
             break;
+    }
+}
+
+void CPU::setKeyState(uint8_t key, bool isPressed) {
+    if (key < 16) {
+        keypad[key] = isPressed ? 1 : 0;
     }
 }
