@@ -202,7 +202,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     registers[x] >>= 1;
                     break;
                 case 0x7: // Set Vx = Vy - Vx, set VF = Not Borrow
-                    registers[0xF] = (registers[y] > registers[x]) ? 1 : 0;
+                    registers[0xF] = (registers[y] >= registers[x]) ? 1 : 0;
                     registers[x] = registers[y] - registers[x];
                     break;
                 case 0xE: // Set Vx = Vx SHL 1
