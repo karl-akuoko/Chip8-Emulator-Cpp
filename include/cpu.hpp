@@ -7,6 +7,9 @@
 class CPU
 {
 public:
+
+    bool isBuzzerPlaying() const { return buzzer_playing; }
+
     // Constructor: sets up initial state
     CPU();
 
@@ -27,6 +30,8 @@ public:
 
 
 private:
+    bool buzzer_playing = false; // Internal state
+
     // Hardware Components
 
     // 16 keys (0-F).

@@ -20,6 +20,28 @@ int main(int argc, char** argv) {
         64 * SCALE, 32 * SCALE, SDL_WINDOW_SHOWN);
 
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    
+    // Audio setup
+    SDL_AudioSpec want;
+    want.freq = 44100;          // Standard CD-quality frequency
+    want.format = AUDIO_S16SYS; // 16-bit signed integers
+    want.channels = 1;          // Mono sound
+    want.samples = 2048;
+
+    SDL_AudioDeviceID dev = SDL_OpenAudioDevice(NULL, 0, &want, NULL, 0);
+
+    std::vector<int16_t> audioBuffer;
+    int sampleRate = 44100;
+    int frequency = 440; // The beep pitch
+    int amplitude = 3000; // The volume
+
+    for (int i = 0; i < sampleRate; ++i) {
+        if ((i / (sampleRate / frequency / 2)) % 2 == 0) {
+            audioBuffer.push_back(amplitude);
+        } else {
+            audioBuffer.push_back(-amplitude);
+        }
+    }
 
     CPU chip8;
     chip8.loadROM(argv[1]);
@@ -59,6 +81,19 @@ int main(int argc, char** argv) {
         // CPU Cycles (Run several cycles per frame)
         for (int i = 0; i < 10; ++i) {
             chip8.cycle();
+        }
+
+        // hardware speaker reacting to internal CPU logic 
+        if (chip8.isBuzzerPlaying()) {
+            SDL_PauseAudioDevice(dev, 0); // Hardware: Start the speaker
+            
+            // Maintain the audio buffer queue
+            if (SDL_GetQueuedAudioSize(dev) < 8192) {
+                SDL_QueueAudio(dev, audioBuffer.data(), audioBuffer.size() * sizeof(int16_t));
+            }
+        } else {
+            SDL_PauseAudioDevice(dev, 1); // Hardware: Stop the speaker
+            SDL_ClearQueuedAudio(dev);
         }
 
         // Update Timers at 60Hz

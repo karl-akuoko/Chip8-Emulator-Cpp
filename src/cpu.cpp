@@ -91,7 +91,10 @@ void CPU::updateTimers() {
     }
 
     if (sound_timer > 0) {
+        buzzer_playing = true;
         --sound_timer;
+    } else {
+        buzzer_playing = false; 
     }
 }
 
