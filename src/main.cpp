@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv) {
     if (argc < 2) {
-        std::cout << "Usage: ./chip8 <ROM_PATH>" << std::endl;
+        std::cout << "Usage: ./Chip8Emulator <ROM_PATH>" << std::endl;
         return 1;
     }
 
