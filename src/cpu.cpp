@@ -102,8 +102,6 @@ void CPU::cycle() {
     // FETCH: Combines two bytes into 16-bit instruction
     uint16_t instruction = (memory[pc] << 8) | memory[pc + 1];
 
-    printf("Fetching at 0x%03X: Opcode 0x%04X\n", pc, instruction);
-
     // Increment PC
     pc += 2;
 
@@ -247,7 +245,6 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     
                     for (int col = 0; col < 8; col++) {
                         if ((sprite_byte & (0x80 >> col)) != 0) {
-                            std::cout << "here" << std::endl;
                             // Wrap coordinates
                             int target_x = (registers[x] + col) % 64;
                             int target_y =(registers[y] + row) % 32;
