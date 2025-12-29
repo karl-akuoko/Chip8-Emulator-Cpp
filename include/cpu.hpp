@@ -35,7 +35,10 @@ private:
     bool buzzer_playing = false; 
 
     // Becomes true once per 60Hz tick
-    bool vblank_ready = true;     
+    bool vblank_ready = true;   
+    
+    bool waiting_for_key = false;
+    int8_t latched_key = -1; // -1 means no key latched
 
     // Hardware Components
 

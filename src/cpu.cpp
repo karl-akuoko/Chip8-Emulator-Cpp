@@ -308,18 +308,28 @@ void CPU::decode_and_execute(uint16_t instruction) {
 
                 // Wait for a key press, store the value of the key in Vx
                 case 0x0A: {
-                    bool key_pressed = false; 
-
-                    for (uint8_t i = 0; i < 16; ++i) {
-                        if (keypad[i]) {
-                            registers[x] = i;
-                            key_pressed = true;
-                            break;
+                    // If we haven't latched a key, look for new press
+                    if (latched_key == -1) {
+                        for (uint8_t k = 0; k < 16; ++k) {
+                            if (keypad[k]) {
+                                latched_key = k;      // remember which key
+                                break;
+                            }
+                        } 
+                        
+                        // Still no key presses -> halt
+                        if (latched_key == -1) {
+                            pc -= 2;
                         }
-                    }
-
-                    if (!key_pressed) {
-                        pc -= 2;
+                        
+                    } else {
+                        if (keypad[latched_key]) {
+                            pc -= 2; // keep stalling until release
+                        } else {
+                            // Stores key in Vx once released
+                            registers[x] = latched_key;   
+                            latched_key = -1;
+                        }
                     }
                     break; }
                 
