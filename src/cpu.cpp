@@ -40,6 +40,11 @@ CPU::CPU()
     memory.fill(0);
     stack.fill(0);
     display.fill(0);
+    keypad.fill(0);
+    buzzer_playing = false; 
+    
+    // ready for first sprite
+    vblank_ready = true;
 
     // Load fontset after clearing memory
     for (unsigned int i = 0; i < 80; i++) {
@@ -175,39 +180,47 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     break;
                 case 0x1: // Set Vx = Vx OR Vy
                     registers[x] = registers[x] | registers[y];
+                    registers[0xF] = 0;
                     break;
                 case 0x2: // Set Vx = Vx AND Vy
                     registers[x] = registers[x] & registers[y];
+                    registers[0xF] = 0;
                     break;
                 case 0x3: // Set Vx = Vx XOR Vy
                     registers[x] = registers[x] ^ registers[y];
+                    registers[0xF] = 0;
                     break;
                 case 0x4: { // Set Vx = Vx + Vy, set VF = carry
                     uint16_t sum = static_cast<uint16_t>(registers[x] 
                         + registers[y]);
-                    registers[0xF] = (sum > 255) ? 1 : 0;
                     registers[x] = sum & 0xFF; 
+                    registers[0xF] = (sum > 255) ? 1 : 0;
                     break; }
-                case 0x5: // Set Vx = Vx - Vy, set VF = NOT borrow
-                    registers[0xF] = (registers[x] > registers[y]) ? 1 : 0;
+                case 0x5:  {// Set Vx = Vx - Vy, set VF = NOT borrow
+                    uint8_t flag = (registers[x] >= registers[y]) ? 1 : 0;
                     registers[x] = registers[x] - registers[y];
-                    break;
-                case 0x6: // Set Vx = Vx SHR 1
-                    if (registers[x] % 2 == 0) {
-                        registers[0xF] = 0;
+                    registers[0xF] = flag;
+                    break; }
+                case 0x6: // Set Vx = Vy SHR 1
+                    uint8_t flag;
+                    if (registers[y] % 2 == 0) {
+                        flag = 0;
                     } else {
-                        registers[0xF] = 1;
+                        flag = 1;
                     }
-                    registers[x] >>= 1;
+                    registers[x] = registers[y] >> 1;
+                    registers[0xF] = flag;
                     break;
-                case 0x7: // Set Vx = Vy - Vx, set VF = Not Borrow
-                    registers[0xF] = (registers[y] >= registers[x]) ? 1 : 0;
+                case 0x7: { // Set Vx = Vy - Vx, set VF = Not Borrow
+                    uint8_t flag = (registers[y] >= registers[x]) ? 1 : 0;
                     registers[x] = registers[y] - registers[x];
-                    break;
-                case 0xE: // Set Vx = Vx SHL 1
-                    registers[0xF] = (registers[x] & 0x80) ? 1 : 0;
-                    registers[x] *= 2;
-                    break;
+                    registers[0xF] = flag;
+                    break; }
+                case 0xE: { // Set Vx = Vy SHL 1
+                    uint8_t flag = (registers[y] & 0x80) ? 1 : 0;
+                    registers[x] = registers[y] * 2;
+                    registers[0xF] = flag;
+                    break; }
             }
             break;
         
@@ -237,17 +250,29 @@ void CPU::decode_and_execute(uint16_t instruction) {
         case 0xD: { // Display n-byte sprite starting at memory location 
                     // I  at (Vx, Vy), set VF = collision.
                 
+                if (!vblank_ready) {
+                    pc -= 2;  // repeat Dxyn until next cycle
+                    break;
+                }
+                vblank_ready = false; // this frames draw perm. is consumed
+
+                int start_x = registers[x] % 64;
+                int start_y = registers[y] % 32;
+
                 registers[0xF] = 0; // Reset collision flag
                 uint32_t pixel_color = 0xFFFFFFFF;
 
                 for (int row = 0; row < n; row++) {
+                    int target_y = start_y + row;
+                    if (target_y >= 32) break;  // clip remaining rows
+
                     uint8_t sprite_byte = memory[index_register + row];
                     
                     for (int col = 0; col < 8; col++) {
                         if ((sprite_byte & (0x80 >> col)) != 0) {
-                            // Wrap coordinates
-                            int target_x = (registers[x] + col) % 64;
-                            int target_y =(registers[y] + row) % 32;
+                            int target_x = start_x + col;
+                            if (target_x >= 64) break;  // clip rest of row
+                    
                             int pixel_index = (target_y * 64) + target_x;
 
                             // Check for collision and adjust pixel 
@@ -334,6 +359,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
                             memory[index_register + i] = registers[i];
                         }
                     }
+                    index_register += (x + 1);
                     break;
                 
                 // Read registers V0 through Vx from memory starting at location I
@@ -341,6 +367,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     for (int i = 0; i <= x; ++i) {
                         registers[i] = memory[index_register + i];
                     }
+                    index_register += (x + 1);
                     break;
             }
             break;

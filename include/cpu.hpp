@@ -28,9 +28,14 @@ public:
     // Share display array data to main
     const uint32_t* getDisplay() const { return display.data(); }
 
+    // Indicate that a sprite is ready to be drawn
+    void setVBlankReady(bool ready) { vblank_ready = ready; }
 
 private:
-    bool buzzer_playing = false; // Internal state
+    bool buzzer_playing = false; 
+
+    // Becomes true once per 60Hz tick
+    bool vblank_ready = true;     
 
     // Hardware Components
 

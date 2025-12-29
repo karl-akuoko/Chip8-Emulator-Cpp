@@ -58,28 +58,28 @@ int main(int argc, char** argv) {
             if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
                 bool pressed = (event.type == SDL_KEYDOWN);
                 switch (event.key.keysym.sym) {
-                    case SDLK_x: chip8.setKeyState(0, pressed); break;
+                    case SDLK_0: chip8.setKeyState(0, pressed); break;
                     case SDLK_1: chip8.setKeyState(1, pressed); break;
                     case SDLK_2: chip8.setKeyState(2, pressed); break;
                     case SDLK_3: chip8.setKeyState(3, pressed); break;
-                    case SDLK_q: chip8.setKeyState(4, pressed); break;
-                    case SDLK_w: chip8.setKeyState(5, pressed); break;
-                    case SDLK_e: chip8.setKeyState(6, pressed); break;
-                    case SDLK_a: chip8.setKeyState(7, pressed); break;
-                    case SDLK_s: chip8.setKeyState(8, pressed); break;
-                    case SDLK_d: chip8.setKeyState(9, pressed); break;
-                    case SDLK_z: chip8.setKeyState(0xA, pressed); break;
-                    case SDLK_c: chip8.setKeyState(0xB, pressed); break;
-                    case SDLK_4: chip8.setKeyState(0xC, pressed); break;
-                    case SDLK_r: chip8.setKeyState(0xD, pressed); break;
-                    case SDLK_f: chip8.setKeyState(0xE, pressed); break;
-                    case SDLK_v: chip8.setKeyState(0xF, pressed); break;
+                    case SDLK_4: chip8.setKeyState(4, pressed); break;
+                    case SDLK_5: chip8.setKeyState(5, pressed); break;
+                    case SDLK_6: chip8.setKeyState(6, pressed); break;
+                    case SDLK_7: chip8.setKeyState(7, pressed); break;
+                    case SDLK_8: chip8.setKeyState(8, pressed); break;
+                    case SDLK_9: chip8.setKeyState(9, pressed); break;
+                    case SDLK_a: chip8.setKeyState(0xA, pressed); break;
+                    case SDLK_b: chip8.setKeyState(0xB, pressed); break;
+                    case SDLK_c: chip8.setKeyState(0xC, pressed); break;
+                    case SDLK_d: chip8.setKeyState(0xD, pressed); break;
+                    case SDLK_e: chip8.setKeyState(0xE, pressed); break;
+                    case SDLK_f: chip8.setKeyState(0xF, pressed); break;
                 }
             }
         }
 
         // CPU Cycles (Run several cycles per frame)
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 15; ++i) {
             chip8.cycle();
         }
 
@@ -100,6 +100,7 @@ int main(int argc, char** argv) {
         uint32_t current_time = SDL_GetTicks();
         if (current_time - last_timer_time >= 16) { // ~60 Hz
             chip8.updateTimers();
+            chip8.setVBlankReady(true);
             last_timer_time = current_time;
         }
 
