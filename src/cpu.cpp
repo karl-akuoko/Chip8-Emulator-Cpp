@@ -113,14 +113,14 @@ void CPU::cycle() {
 
 void CPU::decode_and_execute(uint16_t instruction) {
     // Extract common variables from the opcode
-    uint8_t kk = static_cast<uint8_t>(instruction & 0xFF);
+    uint8_t kk = instruction & 0xFF;
     uint16_t nnn = instruction & 0xFFF;
-    uint8_t n = static_cast<uint8_t>(instruction & 0xF);
-    uint8_t x = static_cast<uint8_t>(instruction & 0xF00) >> 8;
-    uint8_t y = static_cast<uint8_t>(instruction & 0xF0) >> 4;
+    uint8_t n = instruction & 0xF;
+    uint8_t x = (instruction & 0xF00) >> 8;
+    uint8_t y = (instruction & 0xF0) >> 4;
     
-    // first nibble determines instruction vategorm
-    uint8_t first_nibble = static_cast<uint8_t>(instruction & 0xF000) >> 12;
+    // first nibble determines instruction category
+    uint8_t first_nibble = (instruction & 0xF000) >> 12;
     
     switch (first_nibble) {
         case 0x0:
