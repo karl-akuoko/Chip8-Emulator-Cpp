@@ -127,7 +127,6 @@ void CPU::decode_and_execute(uint16_t instruction) {
             // Clear the display
             if (instruction == 0x00E0) {
                 display.fill(0);
-                draw_flag = true;
             // Return from subroutine
             } else if (instruction == 0x00EE) {
                 --sp;
@@ -248,7 +247,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     
                     for (int col = 0; col < 8; col++) {
                         if ((sprite_byte & (0x80 >> col)) != 0) {
-
+                            std::cout << "here" << std::endl;
                             // Wrap coordinates
                             int target_x = (registers[x] + col) % 64;
                             int target_y =(registers[y] + row) % 32;
@@ -261,8 +260,6 @@ void CPU::decode_and_execute(uint16_t instruction) {
                             } else {
                                 display[pixel_index] = pixel_color;
                             }
-
-                            draw_flag = true;
                         }
                     }
                 }
