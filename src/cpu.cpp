@@ -102,6 +102,8 @@ void CPU::cycle() {
     // FETCH: Combines two bytes into 16-bit instruction
     uint16_t instruction = (memory[pc] << 8) | memory[pc + 1];
 
+    printf("Fetching at 0x%03X: Opcode 0x%04X\n", pc, instruction);
+
     // Increment PC
     pc += 2;
 
@@ -235,8 +237,8 @@ void CPU::decode_and_execute(uint16_t instruction) {
             registers[x] = random_byte & kk; // Bitwise AND with kk
             break; }
         
-        case 0xD: { // Display n-byte sprite starting at memory location I at 
-                    // memory location I at (Vx, Vy), set VF = collision.
+        case 0xD: { // Display n-byte sprite starting at memory location 
+                    // I  at (Vx, Vy), set VF = collision.
                 
                 registers[0xF] = 0; // Reset collision flag
                 uint32_t pixel_color = 0xFFFFFFFF;
