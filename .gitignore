@@ -40,8 +40,11 @@
 # debug information files
 *.dwo
 
-# ignore build 
-build/
+# ignore everything in build folder
+build/*
+
+# do not ignore .gitkeep
+!build/.gitkeep
 
 # ignore settings JSON
 .vscode/
