@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
         64 * SCALE, 32 * SCALE, SDL_WINDOW_SHOWN);
 
     SDL_Renderer* renderer = SDL_CreateRenderer(
-        window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        window, -1, SDL_RENDERER_ACCELERATED);
     
     // Audio setup
     SDL_AudioSpec want;
@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
         }
 
         // CPU Cycles (Run several cycles per frame)
-        for (int i = 0; i < 14; ++i) {
+        for (int i = 0; i < 15; ++i) {
             chip8.cycle();
         }
 
@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
 
         // Update Timers at 60Hz
         uint32_t current_time = SDL_GetTicks();
-        if (current_time - last_timer_time >= 16) { // ~60 Hz
+        if (current_time - last_timer_time >= 9) { // ~111 Hz
             chip8.updateTimers();
             chip8.setVBlankReady(true);
             last_timer_time = current_time;
