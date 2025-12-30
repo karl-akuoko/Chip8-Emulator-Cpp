@@ -19,7 +19,8 @@ int main(int argc, char** argv) {
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
         64 * SCALE, 32 * SCALE, SDL_WINDOW_SHOWN);
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* renderer = SDL_CreateRenderer(
+        window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     
     // Audio setup
     SDL_AudioSpec want;
@@ -80,7 +81,7 @@ int main(int argc, char** argv) {
         }
 
         // CPU Cycles (Run several cycles per frame)
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 14; ++i) {
             chip8.cycle();
         }
 
