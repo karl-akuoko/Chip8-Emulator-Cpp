@@ -180,15 +180,15 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     break;
                 case 0x1: // Set Vx = Vx OR Vy
                     registers[x] = registers[x] | registers[y];
-                    registers[0xF] = 0;
+                    // registers[0xF] = 0;
                     break;
                 case 0x2: // Set Vx = Vx AND Vy
                     registers[x] = registers[x] & registers[y];
-                    registers[0xF] = 0;
+                    // registers[0xF] = 0;
                     break;
                 case 0x3: // Set Vx = Vx XOR Vy
                     registers[x] = registers[x] ^ registers[y];
-                    registers[0xF] = 0;
+                    // registers[0xF] = 0;
                     break;
                 case 0x4: { // Set Vx = Vx + Vy, set VF = carry
                     uint16_t sum = static_cast<uint16_t>(registers[x] 
@@ -203,12 +203,12 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     break; }
                 case 0x6: // Set Vx = Vy SHR 1
                     uint8_t flag;
-                    if (registers[y] % 2 == 0) {
+                    if (registers[x] % 2 == 0) {
                         flag = 0;
                     } else {
                         flag = 1;
                     }
-                    registers[x] = registers[y] >> 1;
+                    registers[x] = registers[x] >> 1;
                     registers[0xF] = flag;
                     break;
                 case 0x7: { // Set Vx = Vy - Vx, set VF = Not Borrow
@@ -217,8 +217,8 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     registers[0xF] = flag;
                     break; }
                 case 0xE: { // Set Vx = Vy SHL 1
-                    uint8_t flag = (registers[y] & 0x80) ? 1 : 0;
-                    registers[x] = registers[y] * 2;
+                    uint8_t flag = (registers[x] & 0x80) ? 1 : 0;
+                    registers[x] = registers[x] * 2;
                     registers[0xF] = flag;
                     break; }
             }
@@ -234,8 +234,8 @@ void CPU::decode_and_execute(uint16_t instruction) {
             index_register = static_cast<uint16_t>(nnn); 
             break;
         
-        case 0xB: // Jump to location nnn + V0
-            pc = nnn + registers[0x0];
+        case 0xB: // Jump to location nnn + Vx
+            pc = nnn + registers[x];
             break;
         
         case 0xC: { // Set Vx = random byte AND kk
@@ -366,7 +366,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
                             memory[index_register + i] = registers[i];
                         }
                     }
-                    index_register += (x + 1);
+                    // index_register += (x + 1);
                     break;
                 
                 // Read registers V0 through Vx from memory starting at location I
@@ -374,7 +374,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     for (int i = 0; i <= x; ++i) {
                         registers[i] = memory[index_register + i];
                     }
-                    index_register += (x + 1);
+                    // index_register += (x + 1);
                     break;
             }
             break;
