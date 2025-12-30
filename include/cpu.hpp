@@ -26,7 +26,7 @@ public:
     void updateTimers();
 
     // Share display array data to main
-    const uint32_t* getDisplay() const { return display.data(); }
+    const uint8_t* getDisplay() const { return display.data(); }
 
     // Indicate that a sprite is ready to be drawn
     void setVBlankReady(bool ready) { vblank_ready = ready; }
@@ -64,7 +64,7 @@ private:
     uint8_t sound_timer;
 
     // Display (64x32 pixels, monochrome)
-    std::array<uint32_t, 64 * 32> display;
+    std::array<uint8_t, 64 * 32> display;
 
     // Internal helper function
     void decode_and_execute(uint16_t instruction);

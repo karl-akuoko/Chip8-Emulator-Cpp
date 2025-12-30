@@ -260,7 +260,6 @@ void CPU::decode_and_execute(uint16_t instruction) {
                 int start_y = registers[y] % 32;
 
                 registers[0xF] = 0; // Reset collision flag
-                uint32_t pixel_color = 0xFFFFFFFF;
 
                 for (int row = 0; row < n; row++) {
                     int target_y = start_y + row;
@@ -275,13 +274,11 @@ void CPU::decode_and_execute(uint16_t instruction) {
                     
                             int pixel_index = (target_y * 64) + target_x;
 
-                            // Check for collision and adjust pixel 
-                            if (display[pixel_index] == pixel_color) {
+                            // Check for collision and adjust pixel
+                            if (display[pixel_index] == 1) {
                                 registers[0xF] = 1;
-                                display[pixel_index] = 0; 
-                            } else {
-                                display[pixel_index] = pixel_color;
                             }
+                            display[pixel_index] ^= 1;
                         }
                     }
                 }
