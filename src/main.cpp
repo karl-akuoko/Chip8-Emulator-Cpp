@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
     
     // Audio setup
     SDL_AudioSpec want;
+    SDL_zero(want);
     want.freq = 44100;          // Standard CD-quality frequency
     want.format = AUDIO_S16SYS; // 16-bit signed integers
     want.channels = 1;          // Mono sound

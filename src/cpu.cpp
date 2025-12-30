@@ -321,7 +321,7 @@ void CPU::decode_and_execute(uint16_t instruction) {
                         if (latched_key == -1) {
                             pc -= 2;
                         }
-                        
+
                     } else {
                         if (keypad[latched_key]) {
                             pc -= 2; // keep stalling until release
