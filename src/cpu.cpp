@@ -250,38 +250,38 @@ void CPU::decode_and_execute(uint16_t instruction) {
         case 0xD: { // Display n-byte sprite starting at memory location 
                     // I  at (Vx, Vy), set VF = collision.
                 
-                if (!vblank_ready) {
-                    pc -= 2;  // repeat Dxyn until next cycle
-                    break;
-                }
-                vblank_ready = false; // this frames draw perm. is consumed
+            if (!vblank_ready) {
+                pc -= 2;  // repeat Dxyn until next cycle
+                break;
+            }
+            vblank_ready = false; // this frames draw perm. is consumed
 
-                int start_x = registers[x] % 64;
-                int start_y = registers[y] % 32;
+            int start_x = registers[x] % 64;
+            int start_y = registers[y] % 32;
 
-                registers[0xF] = 0; // Reset collision flag
+            registers[0xF] = 0; // Reset collision flag
 
-                for (int row = 0; row < n; row++) {
-                    int target_y = start_y + row;
-                    if (target_y >= 32) break;  // clip remaining rows
+            for (int row = 0; row < n; row++) {
+                int target_y = start_y + row;
+                if (target_y >= 32) break;  // clip remaining rows
 
-                    uint8_t sprite_byte = memory[index_register + row];
-                    
-                    for (int col = 0; col < 8; col++) {
-                        if ((sprite_byte & (0x80 >> col)) != 0) {
-                            int target_x = start_x + col;
-                            if (target_x >= 64) break;  // clip rest of row
-                    
-                            int pixel_index = (target_y * 64) + target_x;
+                uint8_t sprite_byte = memory[index_register + row];
+                
+                for (int col = 0; col < 8; col++) {
+                    if ((sprite_byte & (0x80 >> col)) != 0) {
+                        int target_x = start_x + col;
+                        if (target_x >= 64) break;  // clip rest of row
+                
+                        int pixel_index = (target_y * 64) + target_x;
 
-                            // Check for collision and adjust pixel
-                            if (display[pixel_index] == 1) {
-                                registers[0xF] = 1;
-                            }
-                            display[pixel_index] ^= 1;
+                        // Check for collision and adjust pixel
+                        if (display[pixel_index] == 1) {
+                            registers[0xF] = 1;
                         }
+                        display[pixel_index] ^= 1;
                     }
                 }
+            }
             break; }
 
         case 0xE: 
