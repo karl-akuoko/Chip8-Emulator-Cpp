@@ -50,4 +50,4 @@ build/*
 .vscode/
 
 # ignore ROM files
-ROMs/
+TestROMs/
