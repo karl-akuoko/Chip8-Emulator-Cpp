@@ -19,7 +19,7 @@ A C++17 CHIP-8 emulator built from scratch using SDL2. This project implements t
 * **Decoupled Rendering Loop:** This implementation separates the display logic from timer logic. While timers update at the standard **60Hz**, the display refreshes at **70** (~14ms intervals). This makes certain games like PONG faster and smoother. 
 * **Opcode Support:** Implements the full standard CHIP-8 instruction set (35 opcodes). 
 * **Graphics Pipeline:** The 64x32 display buffer is rendered using hardware-accelerated SDL2 primitives, scaled 15x for modern high-resolution monitors.
-* **Audio Synthesis:** Sound is not relying on external assets; instead, the emulator generates a raw 440Hz square wave in real-time using `SDL_AudioDevice` and ring buffer management.
+* **Audio Synthesis:** Sound does not rely on external assets; instead, the emulator generates a raw 440Hz square wave in real-time using `SDL_AudioDevice` and ring buffer management.
 * **Input Handling:** Keyboard events are captured via SDL's event polling and mapped directly to the emulator's hex keypad state array, supporting multi-key presses. 
 
 ## Prerequisites (macOS)
