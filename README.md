@@ -2,8 +2,8 @@
 
 A C++17 CHIP-8 emulator built from scratch using SDL2. This project implements the core CHIP-8 virtual machine, allowing you to play classic ROMs like Pong, Tetris, and Invaders on macOS.
 
-![TicTac Gameplay](https://github.com/user-attachments/assets/0183a32c-e837-44d6-98a7-628b8ccfdf52)
-*Running "TicTac" on macOS.*
+![TicTac Gameplay](https://github.com/user-attachments/assets/0b0ea36b-347f-42fc-b751-6f50e5558d7b)
+*Running "TicTac."*
 
 ## Features
 
