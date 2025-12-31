@@ -51,6 +51,7 @@ int main(int argc, char** argv) {
     bool running = true;
     SDL_Event event;
     uint32_t last_timer_time = SDL_GetTicks();
+    uint32_t last_vblank_time = SDL_GetTicks();
 
     while (running) {
         // Handle Events (Input)
@@ -100,10 +101,16 @@ int main(int argc, char** argv) {
 
         // Update Timers at 60Hz
         uint32_t current_time = SDL_GetTicks();
-        if (current_time - last_timer_time >= 9) { // ~111 Hz
+        if (current_time - last_timer_time >= 16) { // ~60 hz
             chip8.updateTimers();
             chip8.setVBlankReady(true);
             last_timer_time = current_time;
+        }
+
+        // Display Hz controller
+        if (current_time - last_vblank_time >= 14) { // ~70 hz
+            chip8.setVBlankReady(true);
+            last_vblank_time = current_time;
         }
 
         // Draw to Screen
