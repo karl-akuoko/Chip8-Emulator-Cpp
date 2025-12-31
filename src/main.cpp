@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
         }
 
         // Display Hz controller
-        if (current_time - last_vblank_time >= 14) { // ~70 hz
+        if (current_time - last_vblank_time >= 14) { // ~70 Hz
             chip8.setVBlankReady(true);
             last_vblank_time = current_time;
         }
