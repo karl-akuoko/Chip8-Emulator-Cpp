@@ -123,7 +123,8 @@ Since CHIP-8 games were written by different authors, control schemes vary. Here
 
 * `src/`: Contains the source code (`main.cpp`, `cpu.cpp`).
 * `include/`: Contains header files (`cpu.hpp`).
-* `build/`: Stores the generated executable and temporary files
+* `build/`: Stores the generated executable and temporary files.
+* `ROMs/`: Playable game files. 
 * `CMakeLists.txt`: Build configuration.
 
 ## References & Resources
