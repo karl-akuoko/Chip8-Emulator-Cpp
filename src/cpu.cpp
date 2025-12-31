@@ -1,6 +1,5 @@
 #include "../include/cpu.hpp"
 #include <fstream>
-#include <vector>
 #include <iostream>
 #include <memory>
 #include <random>
