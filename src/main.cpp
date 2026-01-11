@@ -1,6 +1,6 @@
 #include "../include/cpu.hpp"
 #include "../lib/imgui/imgui.h"
-#include "../lib/imgui/imgui_impl_sdl2.h"
+#include "../lib/imgui/backends/imgui_impl_sdl2.h"
 #include "imgui_impl_sdlrenderer2.h"
 #include <filesystem> // For scanning the ROMs folder
 #include <string>
