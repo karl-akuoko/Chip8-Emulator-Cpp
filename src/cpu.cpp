@@ -1,6 +1,7 @@
 #include "../include/cpu.hpp"
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 #include <memory>
 #include <random>
 
@@ -25,8 +26,7 @@ uint8_t fontset[80] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-CPU::CPU()
-{
+CPU::CPU() {
     // Set Program Counter to the start of most programs
     pc = 0x200;
 
@@ -49,6 +49,31 @@ CPU::CPU()
     for (unsigned int i = 0; i < 80; i++) {
         memory[FONTSET_START_ADDRESS + i] = fontset[i];
     }
+}
+
+void CPU::reset() {
+    // Reset registers
+    pc = 0x200;
+    index_register = 0;
+    sp = 0;
+    delay_timer = 0;
+    sound_timer = 0;
+
+    buzzer_playing = false; 
+    vblank_ready = true;
+
+    // Arrays reset
+    registers.fill(0);
+    stack.fill(0);
+    memory.fill(0);
+    display.fill(0);
+    keypad.fill(0);
+
+    // Load fontset after clearing memory
+    for (unsigned int i = 0; i < 80; i++) {
+        memory[FONTSET_START_ADDRESS + i] = fontset[i];
+    }
+
 }
 
 void CPU::loadROM(const std::string& filename) {

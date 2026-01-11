@@ -11,7 +11,10 @@ public:
     bool isBuzzerPlaying() const { return buzzer_playing; }
 
     // Constructor: sets up initial state
-    CPU();
+   CPU();
+
+    // Resets PC, clears registers, clear display, clear timers
+    void reset();
 
     // Loads game into memory
     void loadROM(const std::string& filename);
