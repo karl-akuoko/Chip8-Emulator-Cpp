@@ -80,6 +80,12 @@ brew install cmake sdl2
 2. **Load a ROM:**
 Use the File menu at the top of the window to select a game from the `ROMs/` folder. The emulator will automatically reset and begin execution once a file is selected.
 
+<img width="955" height="492" alt="image" src="https://github.com/user-attachments/assets/b5e8f8c0-6cb9-4ffb-bffb-326711a833a1" />
+
+
+**Selecting a ROM from the dynamic dropdown menu.**
+
+
 ## Included ROMs
 
 For convenience, a selection of public domain ROMs are included in the `ROMs/` folder.
