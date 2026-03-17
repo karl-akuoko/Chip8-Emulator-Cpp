@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 Karl Akuoko
+Copyright (c) 2026 Karl Akuoko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,16 +20,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
--------------------------------------------------------------------------------
-
-ADDITIONAL BUNDLED ASSETS:
-
-The ROM files included in this distribution (/ROMs folder) are 
-in the Public Domain and are NOT covered by the MIT License above. 
-
-Source: https://www.zophar.net/pdroms/chip8.html
-
 The MIT License applies only to the source code and documentation 
 authored by Karl Akuoko.
 
+-------------------------------------------------------------------------------
 
+ADDITIONAL BUNDLED ASSETS & THIRD-PARTY LICENSES:
+
+1. Dear ImGui (located in /lib/imgui)
+   Copyright (c) 2014-2026 Omar Cornut
+   Licensed under the MIT License (included below).
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+
+2. ROM Files (located in /ROMs)
+   The ROM files included in this distribution are in the Public Domain 
+   and are NOT covered by the MIT License. 
+   Source: https://www.zophar.net/pdroms/chip8.html
+
+3. SDL2 (System Dependency)
+   This project links against SDL2 (Simple DirectMedia Layer), which is 
+   licensed under the Zlib license. SDL2 source code is not bundled with 
+   this repository.

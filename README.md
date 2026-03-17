@@ -22,6 +22,16 @@ A C++17 CHIP-8 emulator built from scratch using SDL2. This project implements t
 * **Audio Synthesis:** Sound does not rely on external assets; instead, the emulator generates a raw 440Hz square wave in real-time using `SDL_AudioDevice` and ring buffer management.
 * **Input Handling:** Keyboard events are captured via SDL's event polling and mapped directly to the emulator's hex keypad state array, supporting multi-key presses. 
 
+## GUI & Interface
+The emulator features a graphical overlay built with `Dear ImGui`, providing a more modern user experience than traditional CLI-only emulators.
+
+* **Dynamic ROM Loading:** A "File" menu that uses `std::filesystem` to scan the `ROMs/` directory in real-time.
+
+* **Input Filtering:** Uses `ImGuiIO` to detect when the user is interacting with menus, preventing "ghost" inputs from affecting the game state.
+
+* **Instant Reset:** Selecting a new ROM automatically clears the `CPU` registers and memory, allowing you to jump between games without restarting the application.
+
+
 ## Prerequisites (macOS)
 
 This project is currently designed for **macOS**. You will need the following tools installed:
@@ -62,11 +72,12 @@ brew install cmake sdl2
 
 ## Usage
 
-To run the emulator, you must provide the path to a CHIP-8 ROM file as a command-line argument.
-
-```bash
-./Chip8Emulator ../ROMs/PONG
-```
+1. **Launch the emulator:**
+    ```bash
+    ./Chip8Emulator
+    ```
+2. **Load a ROM:**
+Use the File menu at the top of the window to select a game from the `ROMs/` folder. The emulator will automatically reset and begin execution once a file is selected.
 
 ## Included ROMs
 
@@ -122,6 +133,7 @@ Since CHIP-8 games were written by different authors, control schemes vary. Here
 ## Project Structure
 
 * `src/`: Contains the source code (`main.cpp`, `cpu.cpp`).
+* `lib/`: Third party libraries, including only `Dear ImGui` as of now.
 * `include/`: Contains header files (`cpu.hpp`).
 * `build/`: Stores the generated executable and temporary files.
 * `ROMs/`: Playable game files. 
@@ -130,7 +142,6 @@ Since CHIP-8 games were written by different authors, control schemes vary. Here
 ## Future Improvements
 
 * **Dynamic Configuration:** Implement command-line arguments (e.g., `--scale 20` or `--quirks modern`) to allow users to adjust the window size and toggle specific CHIP-8 quirks without recompiling.
-* **Game Selector GUI:** Create a graphical user interface that allows users to browse, select, and launch different ROM files easily, removing the need to use the terminal to switch games.
 
 ## References & Resources
 
@@ -145,4 +156,4 @@ Since CHIP-8 games were written by different authors, control schemes vary. Here
 
 MIT License
 
-Copyright (c) 2025 Karl Akuoko
+Copyright (c) 2026 Karl Akuoko
