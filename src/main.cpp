@@ -6,6 +6,7 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <algorithm>
 
 namespace fs = std::filesystem; 
 
@@ -66,8 +67,15 @@ int main(int argc, char** argv) {
 
     bool running = true;
     SDL_Event event;
-    uint32_t last_timer_time = SDL_GetTicks();
-    uint32_t last_vblank_time = SDL_GetTicks();
+    constexpr int CPU_HZ = 900;
+    constexpr int TIMER_HZ = 60;
+    constexpr double CPU_STEP = 1.0 / CPU_HZ;
+    // Avoid a huge burst of execution after a debugger stop or system sleep.
+    constexpr double MAX_CATCHUP_SECONDS = 0.25;
+    const double counter_frequency = static_cast<double>(SDL_GetPerformanceFrequency());
+    Uint64 last_counter = SDL_GetPerformanceCounter();
+    double cpu_accumulator = 0.0;
+    int timer_phase = 0;
 
     while (running) {
         // Handle Events (Input)
@@ -117,6 +125,9 @@ int main(int argc, char** argv) {
                         if (ImGui::MenuItem(entry.path().filename().string().c_str())) {
                             chip8.reset(); // Clear old game data
                             romLoaded = chip8.loadROM(entry.path().string().c_str());
+                            last_counter = SDL_GetPerformanceCounter();
+                            cpu_accumulator = 0.0;
+                            timer_phase = 0;
                         }
                     }
                 }
@@ -127,10 +138,24 @@ int main(int argc, char** argv) {
             ImGui::EndMainMenuBar();
         }
 
+        const Uint64 current_counter = SDL_GetPerformanceCounter();
+        const double elapsed = static_cast<double>(current_counter - last_counter)
+                             / counter_frequency;
+        last_counter = current_counter;
+
         if (romLoaded) {
-            // CPU Cycles (Run several cycles per frame)
-            for (int i = 0; i < 15; ++i) {
+            cpu_accumulator += std::min(elapsed, MAX_CATCHUP_SECONDS);
+            // Advance CPU and timer events together in emulated time, independent
+            // of rendering speed. Preserve fractional time for the next frame.
+            while (cpu_accumulator >= CPU_STEP) {
                 chip8.cycle();
+                cpu_accumulator -= CPU_STEP;
+                timer_phase += TIMER_HZ;
+                if (timer_phase >= CPU_HZ) {
+                    timer_phase -= CPU_HZ;
+                    chip8.updateTimers();
+                    chip8.setVBlankReady(true);
+                }
             }
         }
 
@@ -145,22 +170,6 @@ int main(int argc, char** argv) {
         } else {
             SDL_PauseAudioDevice(dev, 1); // Hardware: Stop the speaker
             SDL_ClearQueuedAudio(dev);
-        }
-
-        if (romLoaded) {
-            // Update Timers at 60Hz
-            uint32_t current_time = SDL_GetTicks();
-            if (current_time - last_timer_time >= 16) { // ~60 hz
-                chip8.updateTimers();
-                chip8.setVBlankReady(true);
-                last_timer_time = current_time;
-            }
-
-            // Display Hz controller
-            if (current_time - last_vblank_time >= 14) { // ~70 Hz
-                chip8.setVBlankReady(true);
-                last_vblank_time = current_time;
-            }
         }
 
         // Draw to Screen
