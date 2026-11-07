@@ -128,9 +128,9 @@ Since CHIP-8 games were written by different authors, control schemes vary. Here
 | | `C` / `D` | Player 2 Up / Down |
 | **INVADERS** | `4` / `6` | Move Left / Right |
 | | `5` | Shoot |
-| **TETRIS** | `4` / `6` | Move Piece Left / Right |
-| | `5` | Rotate Piece |
-| | `8` | Drop Piece |
+| **TETRIS** | `5` / `6` | Move Piece Left / Right |
+| | `4` | Rotate Piece |
+| | `7` | Drop Piece |
 | **BRIX** | `4` / `6` | Move Paddle Left / Right |
 | **BLITZ** | `5` | Drop Bomb |
 | **TANK** | `8` / `2` | Move Down / Up |
