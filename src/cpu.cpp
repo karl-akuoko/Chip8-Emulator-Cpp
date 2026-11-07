@@ -76,7 +76,7 @@ void CPU::reset() {
 
 }
 
-void CPU::loadROM(const std::string& filename) {
+bool CPU::loadROM(const std::string& filename) {
     // Open the file in binary mode and move to the end to find the size
     std::ifstream file(filename, std::ios::binary | std::ios::ate);
 
@@ -90,6 +90,7 @@ void CPU::loadROM(const std::string& filename) {
         if (size > MAX_ROM_SIZE) {
             std::cerr << "Error: ROM file is too large (" << size <<
              " bytes)." << std::endl;
+            return false;
         }
 
         // Creates a unique_ptr to manage the character array 
@@ -107,9 +108,11 @@ void CPU::loadROM(const std::string& filename) {
 
         std::cout << "Successfully loaded ROM: " << filename << " (" <<
             size << "bytes)" << std::endl;
+        return true;
 
     } else {
         std::cerr << "Failed to open ROM file: " << filename << std::endl;
+        return false;
     }
 
 }

@@ -116,8 +116,7 @@ int main(int argc, char** argv) {
                         // Create a clickable menu item for each file found
                         if (ImGui::MenuItem(entry.path().filename().string().c_str())) {
                             chip8.reset(); // Clear old game data
-                            chip8.loadROM(entry.path().string().c_str());
-                            romLoaded = true;
+                            romLoaded = chip8.loadROM(entry.path().string().c_str());
                         }
                     }
                 }

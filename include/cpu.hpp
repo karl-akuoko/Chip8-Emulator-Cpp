@@ -17,7 +17,7 @@ public:
     void reset();
 
     // Loads game into memory
-    void loadROM(const std::string& filename);
+    bool loadROM(const std::string& filename);
 
     // Fetch-Decode_Execute
     void cycle();
