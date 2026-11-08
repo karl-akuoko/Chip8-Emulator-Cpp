@@ -101,8 +101,6 @@ To ensure the widest compatibility with the included ROMs, the following specifi
 * **Shift Instructions (`8xy6`, `8xyE`):** Configured to modern SCHIP behavior (modifies `VX` in place).
 * **Memory Load/Store (`Fx55`, `Fx65`):** Configured to modern behavior (does not increment the Index register).
 * **VF Reset:** **Disabled.** (Logic instructions like AND/OR/XOR do not reset the VF flag to 0, matching SUPER-CHIP behavior).
-* **Display Wait:** **Enabled.**
-    * *Note:* While some modern specifications disable this, it was intentionally **enabled** in this implementation to ensure smooth operation with the included ROM files. The [Timendus Chip-8 Test Suite](https://github.com/Timendus/chip8-test-suite) shows this as disabled. This is because the refresh rate of the display was increased relative to the timers, which govern the test. 
 
 ## Controls
 
