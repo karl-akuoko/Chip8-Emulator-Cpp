@@ -144,10 +144,6 @@ Since CHIP-8 games were written by different authors, control schemes vary. Here
 * `ROMs/`: Playable game files. 
 * `CMakeLists.txt`: Build configuration.
 
-## Future Improvements
-
-* **Dynamic Configuration:** Implement command-line arguments (e.g., `--scale 20` or `--quirks modern`) to allow users to adjust the window size and toggle specific CHIP-8 quirks without recompiling.
-
 ## References & Resources
 
 * **Cowgod's Chip-8 Technical Reference:** The primary specification used for this implementation.
